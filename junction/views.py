@@ -17,7 +17,10 @@ from .models import Junction, Qi
 @csrf_exempt
 def upload(request):
 	
-	pass
+	if request.method =='POST':
+		
+		data = JSONParser().parse(request)
+		return JSONResponse(data['QInfo'][0]['message'], status = 201)
 
 def index(request):
 
