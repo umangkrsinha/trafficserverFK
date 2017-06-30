@@ -12,20 +12,24 @@ class Junction(models.Model):
 	QcNum = models.IntegerField(default = 0)
 	QdNum = models.IntegerField(default = 0)
 	
-	QabRat = models.FloatField(default = 0.33)
-	QacRat = models.FloatField(default = 0.33)
-	QadRat = models.FloatField(default = 0.33)
-	QbaRat = models.FloatField(default = 0.33)
-	QbcRat = models.FloatField(default = 0.33)
-	QbdRat = models.FloatField(default = 0.33)
-	QcaRat = models.FloatField(default = 0.33)
-	QcbRat = models.FloatField(default = 0.33)
-	QcdRat = models.FloatField(default = 0.33)
-	QdaRat = models.FloatField(default = 0.33)
-	QdbRat = models.FloatField(default = 0.33)
-	QdcRat = models.FloatField(default = 0.33)
+	Qab = models.FloatField(default = 10)
+	Qac = models.FloatField(default = 10)
+	Qad = models.FloatField(default = 10)
+	Qba = models.FloatField(default = 10)
+	Qbc = models.FloatField(default = 10)
+	Qbd = models.FloatField(default = 10)
+	Qca = models.FloatField(default = 10)
+	Qcb = models.FloatField(default = 10)
+	Qcd = models.FloatField(default = 10)
+	Qda = models.FloatField(default = 10)
+	Qdb = models.FloatField(default = 10)
+	Qdc = models.FloatField(default = 10)
 
 	visitNum = models.IntegerField(default = 0)
+
+	green = models.IntegerField(default = 1)
+
+	isFirstPhase = models.BooleanField(default = True)
 
 	def __unicode__(self):
 		return str(self.number)
