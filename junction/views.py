@@ -22,16 +22,15 @@ def upload(request):
 		data = JSONParser().parse(request)
 
 		junctionNum = data['QInfo'][0]['junctionNum']
-		junction = Junction.objects.get(junctionNum = junctionNum)
+		junction = Junction.objects.get(number = junctionNum)
 		if junction.visitNum <= 3:
 			junction.visitNum += 1
 			junction.save()
 			message = 'waiting for ' +str(4-junction.visitNum) + 'more devices!'
 		
 		for vehicleData in data['QInfo']:
-			vehicleData.jucntionNum = junction
-			serailizer = QiSerializer(data = vehicleData)
-			
+			vehicleData['junctionNum'] = junction
+			serializer = QiSerializer(data = vehicleData)
 			if serializer.is_valid():
 				serializer.save()
 
@@ -40,8 +39,9 @@ def upload(request):
 			Qi.objects.all().delete()
 			message = 'next phase has been set!'
 
-		junction = Junction.objects.get(junctionNum = junctionNum)
-		return JSONResponse({recievedQInfo: data['QInfo'], message: message, phase: junction.green}, status = 201)
+		green = Junction.objects.get(number = junctionNum).green
+
+		return JSONResponse({"message": message, "phase": green}, status = 201)
 	
 	else:
 		return HttpResponse('<h1>Request is not a Post request!</h1>')
@@ -54,7 +54,7 @@ def index(request):
 def makePhase(junction):
 
 	Q = Qi.objects.filter(junctionNum = junction)
-	Q = [Q.filter(1), Q.filter(2), Q.filter(3), Q.filter(4)]
+	Q = [Q.filter(i = 1), Q.filter(i = 2), Q.filter(i = 3), Q.filter(i = 4)]
 	Qlen = [len(Q[0]), len(Q[1]), len(Q[2]), len(Q[3])]
 
 	if junction.isFirstPhase:
@@ -62,7 +62,10 @@ def makePhase(junction):
 
 	else:
 		green = junction.green
-		for k in [1, 2, 3, 4].remove(green):
+		tempList = [1, 2, 3, 4]
+		tempList.remove(green)
+		Qij = []
+		for k in tempList:
 			Qij += [len([i for i in Q[green-1] for j in Q[k-1] if i['macadd'] == j['macadd']])]
 
 		if green == 1:
@@ -110,10 +113,10 @@ def makePhase(junction):
 	#preparing to call algo:
 	
 	Qlen = numpy.array(Qlen)
-	Qar = (numpy.array([junction.Qab, junction.Qac, junction.Qad]))/float(Qlen[0])
-	Qbr = (numpy.array([junction.Qba, junction.Qbc, junction.Qbd]))/float(Qlen[1])
-	Qcr = (numpy.array([junction.Qca, junction.Qcb, junction.Qcd]))/float(Qlen[2])
-	Qdr = (numpy.array([junction.Qda, junction.Qdb, junction.Qdc]))/float(Qlen[3])
+	Qar = numpy.insert((numpy.array([junction.Qab, junction.Qac, junction.Qad]))/float(Qlen[0]), 0, 0)
+	Qbr = numpy.insert((numpy.array([junction.Qba, junction.Qbc, junction.Qbd]))/float(Qlen[1]), 1, 0)
+	Qcr = numpy.insert((numpy.array([junction.Qca, junction.Qcb, junction.Qcd]))/float(Qlen[2]), 2, 0)
+	Qdr = numpy.insert((numpy.array([junction.Qda, junction.Qdb, junction.Qdc]))/float(Qlen[3]), 3, 0)
 	#call algo:
 	junction.green = algo(Qlen[0], Qlen[1], Qlen[2], Qlen[3], Qar, Qbr, Qcr, Qdr)
 	junction.save()
