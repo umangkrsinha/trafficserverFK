@@ -110,8 +110,34 @@ def makePhase(junction):
 	return 0
 	
 #the main algorhithm: returns the number of the road which should have green light for the next phase
-def algo(junction):
-	return 1 #green light should be on road a
+def algo(Qa,Qb,Qc,Qd,Qar,Qbr,Qcr,Qdr):
+	
+    def Pressure(Qa):  #assumed linear
+        return (2*Qa+1)
+    U=numpy.zeros((4,4,4))
+    U[0][0]=[0,17,18,19]
+    U[1][1]=[16,0,14,18]
+    U[2][2]=[13,11,0,14]
+    U[3][3]=[9,7,8,0]
+    
+    Pressure_Array=Pressure(numpy.array([Qa,Qb,Qc,Qd]))  
+    
+    W=numpy.zeros((4,4))
+    #Preparing Weights
+    W[0]=numpy.maximum(((Qa*numpy.array(Qar))/U[0][0]*[0,Pressure(Qa)-Pressure(Qb),Pressure(Qa)-Pressure(Qc),Pressure(Qa)-Pressure(Qd)]),[0,0,0,0])
+    W[1]=numpy.maximum(((Qb*numpy.array(Qbr))/U[1][1]*[Pressure(Qb)-Pressure(Qa),0,Pressure(Qb)-Pressure(Qc),Pressure(Qb)-Pressure(Qd)]),[0,0,0,0])
+    W[2]=numpy.maximum(((Qc*numpy.array(Qcr))/U[2][2]*[Pressure(Qc)-Pressure(Qa),Pressure(Qc)-Pressure(Qb),0,Pressure(Qc)-Pressure(Qd)]),[0,0,0,0])
+    W[3]=numpy.maximum(((Qd*numpy.array(Qdr))/U[3][3]*[Pressure(Qd)-Pressure(Qa),Pressure(Qd)-Pressure(Qb),Pressure(Qc)-Pressure(Qd),0]),[0,0,0,0])
+    
+    for i in range(4):
+        W[i][i]=0
+    b=0
+    for i in range (4):
+        a=numpy.sum(W*U[i])
+        if(numpy.sum(W*U[i])>a):
+            b=i
+            
+    return i+1
 
 #Helper functions:
 class JSONResponse(HttpResponse):
