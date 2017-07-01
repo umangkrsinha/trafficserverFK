@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 import json, decimal
-
+import numpy
 from .serializers import JunctionSerializer, QiSerializer
 from .models import Junction, Qi
 
@@ -37,8 +37,10 @@ def upload(request):
 
 		if junction.visitNum >= 4:
 			makePhase(junction)
+			Qi.objects.all().delete()
 			message = 'next phase has been set!'
 
+		junction = Junction.objects.get(junctionNum = junctionNum)
 		return JSONResponse({recievedQInfo: data['QInfo'], message: message, phase: junction.green}, status = 201)
 	
 	else:
@@ -105,9 +107,17 @@ def makePhase(junction):
 		junction.save()
 		return 0
 
-	junction.green = algo(junction)
+	#preparing to call algo:
+	
+	Qlen = numpy.array(Qlen)
+	Qar = (numpy.array([junction.Qab, junction.Qac, junction.Qad]))/float(Qlen[0])
+	Qbr = (numpy.array([junction.Qba, junction.Qbc, junction.Qbd]))/float(Qlen[1])
+	Qcr = (numpy.array([junction.Qca, junction.Qcb, junction.Qcd]))/float(Qlen[2])
+	Qdr = (numpy.array([junction.Qda, junction.Qdb, junction.Qdc]))/float(Qlen[3])
+	#call algo:
+	junction.green = algo(Qlen[0], Qlen[1], Qlen[2], Qlen[3], Qar, Qbr, Qcr, Qdr)
 	junction.save()
-	return 0
+	return junction.green
 	
 #the main algorhithm: returns the number of the road which should have green light for the next phase
 def algo(Qa,Qb,Qc,Qd,Qar,Qbr,Qcr,Qdr):
