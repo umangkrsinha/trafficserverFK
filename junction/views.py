@@ -29,10 +29,11 @@ def upload(request):
 			message = 'waiting for ' +str(4-junction.visitNum) + 'more devices!'
 		
 		for vehicleData in data['QInfo']:
-			vehicleData['junctionNum'] = junction
 			serializer = QiSerializer(data = vehicleData)
 			if serializer.is_valid():
 				serializer.save()
+			else:
+				return JSONResponse(serializer.errors, status = 400)
 
 		if junction.visitNum >= 4:
 			makePhase(junction)

@@ -7,10 +7,10 @@ from django.db import models
 class Junction(models.Model):
 	number = models.IntegerField(primary_key=True)
 	
-	QaNum = models.IntegerField(default = 0)
-	QbNum = models.IntegerField(default = 0)
-	QcNum = models.IntegerField(default = 0)
-	QdNum = models.IntegerField(default = 0)
+	QaNum = models.IntegerField(default = 10)
+	QbNum = models.IntegerField(default = 10)
+	QcNum = models.IntegerField(default = 10)
+	QdNum = models.IntegerField(default = 10)
 	
 	Qab = models.FloatField(default = 10)
 	Qac = models.FloatField(default = 10)
