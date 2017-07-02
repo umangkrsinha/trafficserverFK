@@ -67,7 +67,7 @@ def makePhase(junction):
 		tempList.remove(green)
 		Qij = []
 		for k in tempList:
-			Qij += [len([i for i in Q[green-1] for j in Q[k-1] if i['macadd'] == j['macadd']])]
+			Qij += [len([i for i in Q[green-1] for j in Q[k-1] if i.macadd == j.macadd])]
 
 		if green == 1:
 			Qlen[1] -= Qij[0]
