@@ -146,12 +146,14 @@ def algo(Qa,Qb,Qc,Qd,Qar,Qbr,Qcr,Qdr):
     for i in range(4):
         W[i][i]=0
     b=0
+    a=0
     for i in range (4):
         a=numpy.sum(W*U[i])
         if(numpy.sum(W*U[i])>a):
-            b=i
+          a=(numpy.sum(W*U[i]) 
+	  b=i
             
-    return i+1
+    return b+1
 
 #Helper functions:
 class JSONResponse(HttpResponse):
