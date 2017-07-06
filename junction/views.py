@@ -144,13 +144,13 @@ def algo(Qa,Qb,Qc,Qd,Qar,Qbr,Qcr,Qdr):
     W[3]=numpy.maximum(((Qd*numpy.array(Qdr))/U[3][3]*[Pressure(Qd)-Pressure(Qa),Pressure(Qd)-Pressure(Qb),Pressure(Qc)-Pressure(Qd),0]),[0,0,0,0])
     
     for i in range(4):
-        W[i][i]=0
+         W[i][i]=0
     b=0
     a=0
     for i in range (4):
         if(numpy.sum(W*U[i])>a):
-          a=(numpy.sum(W*U[i])) 
-	  b=i
+          a=(numpy.sum(W*U[i]))
+    b=i
             
     return b+1
 
