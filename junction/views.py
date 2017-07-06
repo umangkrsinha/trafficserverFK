@@ -26,7 +26,7 @@ def upload(request):
 		if junction.visitNum <= 3:
 			junction.visitNum += 1
 			junction.save()
-			message = 'waiting for ' +str(4-junction.visitNum) + 'more devices!'
+			message = 'waiting for ' +str(4-junction.visitNum) + ' more devices!'
 		
 		for vehicleData in data['QInfo']:
 			serializer = QiSerializer(data = vehicleData)
@@ -69,6 +69,20 @@ def makePhase(junction):
 		for k in tempList:
 			Qij += [len([i for i in Q[green-1] for j in Q[k-1] if i.macadd == j.macadd])]
 
+		
+		Qba_old = junction.Qba
+		Qab_old = junction.Qab
+		Qca_old = junction.Qca
+		Qac_old = junction.Qac
+		Qbc_old = junction.Qbc
+		Qad_old = junction.Qad
+		Qcb_old = junction.Qcb
+		Qda_old = junction.Qda
+		Qbd_old = junction.Qbd
+		Qdb_old = junction.Qdb
+		Qcd_old = junction.Qcd
+		Qdc_old = junction.Qdc
+
 		if green == 1:
 			Qlen[1] -= Qij[0]
 			Qlen[2] -= Qij[1]
@@ -77,7 +91,7 @@ def makePhase(junction):
 			junction.Qab = (float(Qij[0])/((junction.QaNum)))*Qlen[0]
 			junction.Qac = (float(Qij[1])/((junction.QaNum)))*Qlen[0]
 			junction.Qad = (float(Qij[2])/((junction.QaNum)))*Qlen[0]
-	    
+		
 		elif green == 2:
 			Qlen[0] -= Qij[0]
 			Qlen[2] -= Qij[1]
@@ -115,9 +129,18 @@ def makePhase(junction):
 	
 	Qlen = numpy.array(Qlen)
 	Qar = numpy.insert((numpy.array([junction.Qab, junction.Qac, junction.Qad]))/float(Qlen[0]), 0, 0)
+	Qar_old = numpy.insert((numpy.array([Qab_old, Qac_old, Qad_old]))/float(Qlen[0]), 0, 0)
 	Qbr = numpy.insert((numpy.array([junction.Qba, junction.Qbc, junction.Qbd]))/float(Qlen[1]), 1, 0)
+	Qbr_old = numpy.insert((numpy.array([Qba_old, Qbc_old, Qbd_old]))/float(Qlen[1]), 1, 0)
 	Qcr = numpy.insert((numpy.array([junction.Qca, junction.Qcb, junction.Qcd]))/float(Qlen[2]), 2, 0)
+	Qcr_old = numpy.insert((numpy.array([Qca_old, Qcb_old, Qcd_old]))/float(Qlen[2]), 2, 0)
 	Qdr = numpy.insert((numpy.array([junction.Qda, junction.Qdb, junction.Qdc]))/float(Qlen[3]), 3, 0)
+	Qdr_old = numpy.insert((numpy.array([Qda_old, Qdb_old, Qdc_old]))/float(Qlen[3]), 3, 0)
+
+	Qar = ((2*Qar + Qar_old)/(3.0))
+	Qbr = ((2*Qbr + Qbr_old)/(3.0))
+	Qcr = ((2*Qcr + Qcr_old)/(3.0))
+	Qdr = ((2*Qdr + Qdr_old)/(3.0))
 	#call algo:
 	junction.green = algo(Qlen[0], Qlen[1], Qlen[2], Qlen[3], Qar, Qbr, Qcr, Qdr)
 	junction.save()
