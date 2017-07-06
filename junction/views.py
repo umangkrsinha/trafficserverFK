@@ -149,7 +149,7 @@ def algo(Qa,Qb,Qc,Qd,Qar,Qbr,Qcr,Qdr):
     a=0
     for i in range (4):
         if(numpy.sum(W*U[i])>a):
-          a=(numpy.sum(W*U[i]) 
+          a=(numpy.sum(W*U[i])) 
 	  b=i
             
     return b+1
