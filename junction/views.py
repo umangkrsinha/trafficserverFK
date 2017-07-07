@@ -24,19 +24,20 @@ def upload(request):
 		flag = False
 
 		if data['QInfo'][0] == 'N':
-			data['QInfo'].remove('N')
 			flag = True
-			junctionNum,  deviceNum= data.['QInfo'].split(' ')
+			junctionNum = data['QInfo'].split(' ')[1]
+			print junctionNum
 		else:
 			junctionNum = data['QInfo'][0]['junctionNum']
 
-		junction = Junction.objects.get(number = junctionNum)
+		junction = Junction.objects.filter(number = junctionNum)[0]
+		print junction
 		if junction.visitNum <= 3:
 			junction.visitNum += 1
 			junction.save()
 			message = 'waiting for ' +str(4-junction.visitNum) + ' more devices!'
 		
-		if flag:
+		if not flag:
 			for vehicleData in data['QInfo']:
 				serializer = QiSerializer(data = vehicleData)
 				if serializer.is_valid():
