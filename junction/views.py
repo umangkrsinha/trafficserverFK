@@ -21,19 +21,28 @@ def upload(request):
 		
 		data = JSONParser().parse(request)
 
-		junctionNum = data['QInfo'][0]['junctionNum']
+		flag = False
+
+		if data['QInfo'][0] == 'N':
+			data['QInfo'].remove('N')
+			flag = True
+			junctionNum,  deviceNum= data.['QInfo'].split(' ')
+		else:
+			junctionNum = data['QInfo'][0]['junctionNum']
+
 		junction = Junction.objects.get(number = junctionNum)
 		if junction.visitNum <= 3:
 			junction.visitNum += 1
 			junction.save()
 			message = 'waiting for ' +str(4-junction.visitNum) + ' more devices!'
 		
-		for vehicleData in data['QInfo']:
-			serializer = QiSerializer(data = vehicleData)
-			if serializer.is_valid():
-				serializer.save()
-			else:
-				return JSONResponse(serializer.errors, status = 400)
+		if flag:
+			for vehicleData in data['QInfo']:
+				serializer = QiSerializer(data = vehicleData)
+				if serializer.is_valid():
+					serializer.save()
+				else:
+					return JSONResponse(serializer.errors, status = 400)
 
 		if junction.visitNum >= 4:
 			makePhase(junction)
