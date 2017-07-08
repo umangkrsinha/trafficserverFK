@@ -98,26 +98,29 @@ def makePhase(junction):
 			Qlen[2] -= Qij[1]
 			Qlen[3] -= Qij[2]
 			Qlen[0] -= (Qij[0] + Qij[1] + Qij[2])
-			junction.Qab = (float(Qij[0])/((junction.QaNum)))*Qlen[0]
-			junction.Qac = (float(Qij[1])/((junction.QaNum)))*Qlen[0]
-			junction.Qad = (float(Qij[2])/((junction.QaNum)))*Qlen[0]
+			if junction.QaNum != 0:
+				junction.Qab = (float(Qij[0])/((junction.QaNum)))*Qlen[0]
+				junction.Qac = (float(Qij[1])/((junction.QaNum)))*Qlen[0]
+				junction.Qad = (float(Qij[2])/((junction.QaNum)))*Qlen[0]
 		
 		elif green == 2:
 			Qlen[0] -= Qij[0]
 			Qlen[2] -= Qij[1]
 			Qlen[3] -= Qij[2]
 			Qlen[1] -= (Qij[0] + Qij[1] + Qij[2])
-			junction.Qba = (float(Qij[0])/((junction.QbNum)))*Qlen[1]
-			junction.Qbc = (float(Qij[1])/((junction.QbNum)))*Qlen[1]
-			junction.Qbd = (float(Qij[2])/((junction.QbNum)))*Qlen[1]	
+			if junction.QbNum != 0:
+				junction.Qba = (float(Qij[0])/((junction.QbNum)))*Qlen[1]
+				junction.Qbc = (float(Qij[1])/((junction.QbNum)))*Qlen[1]
+				junction.Qbd = (float(Qij[2])/((junction.QbNum)))*Qlen[1]	
 		elif green == 3:
 			Qlen[0] -= Qij[0]
 			Qlen[1] -= Qij[1]
 			Qlen[3] -= Qij[2]
 			Qlen[2] -= (Qij[0] + Qij[1] + Qij[2])
-			junction.Qca = (float(Qij[0])/((junction.QcNum)))*Qlen[2]
-			junction.Qcb = (float(Qij[1])/((junction.QcNum)))*Qlen[2]
-			junction.Qcd = (float(Qij[2])/((junction.QcNum)))*Qlen[2]
+			if junction.QcNum !=b 0:
+				junction.Qca = (float(Qij[0])/((junction.QcNum)))*Qlen[2]
+				junction.Qcb = (float(Qij[1])/((junction.QcNum)))*Qlen[2]
+				junction.Qcd = (float(Qij[2])/((junction.QcNum)))*Qlen[2]
 		else:
 			Qlen[0] -= Qij[0]
 			Qlen[1] -= Qij[1]
