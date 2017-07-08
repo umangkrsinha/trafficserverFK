@@ -10,7 +10,7 @@ class Junction(models.Model):
 	QaNum = models.IntegerField(default = 30)
 	QbNum = models.IntegerField(default = 30)
 	QcNum = models.IntegerField(default = 30)
-	QdNum = models.IntegerField(default = 3`0)
+	QdNum = models.IntegerField(default = 30)
 	
 	Qab = models.FloatField(default = 10)
 	Qac = models.FloatField(default = 10)
